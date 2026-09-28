@@ -33,7 +33,15 @@ A Chrome bookmarklet that formats supported Japanese phone numbers with the appr
 5. 成功すると、ハイフン付き電話番号でクリップボードが上書きされ、結果がダイアログ表示されます。
 6. 非対応形式の場合はエラーダイアログを表示し、変換しません。
 
-> Clipboard access is subject to the browser's security model. Chrome may refuse clipboard access on pages or contexts where the Clipboard API is unavailable.
+> Clipboard access is subject to the browser's security model. If the Clipboard API is unavailable or access is denied, the bookmarklet falls back to a prompt for manual input. If automatic clipboard writing is unavailable, the formatted result is shown in a prompt so it can be copied manually.
+
+### Clipboard fallback / クリップボードのフォールバック
+
+実行ページで `navigator.clipboard` が利用できない、またはブラウザが読み取りを拒否した場合は、電話番号入力用のダイアログを表示します。そこへ電話番号を貼り付けると、通常と同じフォーマット処理を行います。
+
+変換後に `navigator.clipboard.writeText()` が利用できない、または書き込みが拒否された場合は、変換結果をダイアログへ表示します。結果を手動でコピーしてください。
+
+このフォールバックは入出力方法だけを変更し、電話番号の判定・先頭0補完・拒否ルールには影響しません。
 
 ## Leading-zero completion / 先頭0の自動補完
 
