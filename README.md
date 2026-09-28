@@ -17,6 +17,10 @@ A Chrome bookmarklet that formats supported Japanese phone numbers with the appr
 | `0421234567` | `042-123-4567` | Geographic fixed line |
 | `0467123456` | `0467-12-3456` | Geographic fixed line |
 | `0597921234` | `05979-2-1234` | Geographic fixed line |
+| `9012345678` | `090-1234-5678` | Mobile (leading 0 omitted) |
+| `5012345678` | `050-1234-5678` | IP phone (leading 0 omitted) |
+| `120123456` | `0120-123-456` | Toll-free (leading 0 omitted) |
+| `312345678` | `03-1234-5678` | Geographic fixed line (leading 0 omitted) |
 
 `0570` and `0800` are intentionally rejected by the current project specification. Other special-purpose/service-number ranges are not accepted unless explicitly supported above.
 
@@ -30,6 +34,17 @@ A Chrome bookmarklet that formats supported Japanese phone numbers with the appr
 6. 非対応形式の場合はエラーダイアログを表示し、変換しません。
 
 > Clipboard access is subject to the browser's security model. Chrome may refuse clipboard access on pages or contexts where the Clipboard API is unavailable.
+
+## Leading-zero completion / 先頭0の自動補完
+
+先頭の `0` が省略された半角数字のみの入力は、`0` を一時的に補完して既存の電話番号判定へ渡します。補完後の番号が対応形式として成立する場合のみ変換します。
+
+```text
+9012345678 → 09012345678 → 090-1234-5678
+312345678  → 0312345678  → 03-1234-5678
+```
+
+補完後にも既存の拒否ルールを適用します。そのため、`570123456` は `0570...`、`8001234567` は `0800...` として拒否されます。判定不能な番号を、0補完だけを理由に推測して整形することはありません。
 
 ## Fixed-line handling / 固定電話の判定
 
@@ -66,6 +81,7 @@ jp-phone-number-formatter/
 ## Design policy
 
 - 入力はハイフンなしの半角数字のみ。
+- 先頭 `0` が省略されている場合は `0` を仮補完してから既存の判定を行う。
 - `070` / `080` / `090` は携帯電話として `3-4-4` に整形。
 - `050` は `050-XXXX-XXXX` として許可。
 - `0120` は `0120-XXX-XXX` として許可。
