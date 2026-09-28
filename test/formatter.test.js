@@ -1,0 +1,4 @@
+const test=require('node:test');const assert=require('node:assert/strict');const{formatJapanesePhoneNumber:f}=require('../src/formatter');
+test('supported numbers',()=>{for(const[i,o]of[['09012345678','090-1234-5678'],['08012345678','080-1234-5678'],['07012345678','070-1234-5678'],['05012345678','050-1234-5678'],['0120123456','0120-123-456'],['0312345678','03-1234-5678'],['0612345678','06-1234-5678'],['0111234567','011-123-4567'],['0421234567','042-123-4567'],['0467123456','0467-12-3456'],['0597921234','05979-2-1234']])assert.equal(f(i),o)});
+test('unsupported service numbers',()=>{assert.throws(()=>f('0570123456'),/0570/);assert.throws(()=>f('08001234567'),/0800/)});
+test('invalid input',()=>{for(const n of['','090-1234-5678','1234567890','0501234567','01201234567','abcdefghij'])assert.throws(()=>f(n))});
